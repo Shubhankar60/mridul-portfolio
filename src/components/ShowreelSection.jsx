@@ -2,17 +2,17 @@ import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Volume2, VolumeX } from "lucide-react";
 
-// 🎬 Video Categories
+// 🎥 Video Categories
 const videoCategories = [
   {
-    title: "Car & bikes Videos",
+    title: "Car & Bikes Videos",
     description: "Cinematic edits showcasing power, motion, and precision.",
     videos: [
       { src: "/assets/car&bike2.mp4" },
       { src: "/assets/cars&bike1.mp4" },
       { src: "/assets/car&bike3.mp4" },
       { src: "/assets/car&bike4.mp4" },
-      { src: "/assets/car&bike5.mp5" },
+      { src: "/assets/car&bike5.mp4" },
     ],
   },
   {
@@ -37,14 +37,13 @@ const videoCategories = [
 ];
 
 export default function ShowreelSection() {
-  const [muted, setMuted] = useState(true); // global mute state
+  const [muted, setMuted] = useState(true);
   const videoRefs = useRef([]);
 
   // 🧠 Toggle mute for ALL videos
   const toggleMute = () => {
     const newMuteState = !muted;
     setMuted(newMuteState);
-
     videoRefs.current.forEach((video) => {
       if (video) video.muted = newMuteState;
     });
@@ -100,7 +99,7 @@ export default function ShowreelSection() {
         </button>
       </motion.div>
 
-      {/* Video Categories */}
+      {/* 🎞️ Video Categories */}
       {videoCategories.map((category, catIndex) => (
         <div key={catIndex} className="max-w-6xl mx-auto px-6 mb-20">
           {/* Category Header */}
@@ -117,8 +116,8 @@ export default function ShowreelSection() {
             <p className="text-gray-400">{category.description}</p>
           </motion.div>
 
-          {/* Videos Grid */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/* 🎬 Insta Reel Style Horizontal Scroll */}
+          <div className="flex overflow-x-auto space-x-6 scrollbar-hide snap-x snap-mandatory px-4 py-4 justify-start">
             {category.videos.map((video, vidIndex) => {
               const globalIndex = catIndex * category.videos.length + vidIndex;
               return (
@@ -128,7 +127,7 @@ export default function ShowreelSection() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.6 }}
                   viewport={{ once: true }}
-                  className="relative rounded-2xl overflow-hidden shadow-lg group"
+                  className="relative rounded-2xl overflow-hidden shadow-lg group flex-shrink-0 w-[360px] h-[640px] snap-center bg-gray-900"
                 >
                   <video
                     ref={(el) => (videoRefs.current[globalIndex] = el)}
@@ -137,7 +136,7 @@ export default function ShowreelSection() {
                     loop
                     muted={muted}
                     playsInline
-                    className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </motion.div>
               );

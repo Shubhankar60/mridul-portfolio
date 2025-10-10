@@ -16,7 +16,7 @@ export default function About() {
           className="flex-shrink-0"
         >
           <img
-            src="/images/profile.jpg"
+            src="profileMridul.jpeg"
             alt="Profile"
             className="w-64 h-64 md:w-80 md:h-80 rounded-full object-cover shadow-lg border-4 border-yellow-400"
           />

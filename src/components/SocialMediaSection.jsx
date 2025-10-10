@@ -42,15 +42,7 @@ export default function SocialMediaSection() {
           <Instagram size={28} />
         </a>
 
-        {/* Facebook */}
-        <a
-          href="https://www.facebook.com/your_facebook_username"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-yellow-400 text-black p-4 rounded-full hover:bg-yellow-300 transition transform hover:scale-110"
-        >
-          <Facebook size={28} />
-        </a>
+        
       </motion.div>
     </section>
   );

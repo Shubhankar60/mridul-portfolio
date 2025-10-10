@@ -5,7 +5,7 @@ export default function Contact() {
   const formRef = useRef();
 
   // ✅ Replace with your WhatsApp number (include country code, no '+')
-  const phoneNumber = "+917630871689"; // Example: +91 8765432109
+  const phoneNumber = "+919862210324"; // Example: +91 8765432109
 
   const sendToWhatsApp = (e) => {
     e.preventDefault();
