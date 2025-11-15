@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 
 export default function Hero() {
-  // Scroll function
+  const [videoLoaded, setVideoLoaded] = useState(false);
+
   const scrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
     if (section) {
@@ -12,6 +13,22 @@ export default function Hero() {
 
   return (
     <section className="relative w-full h-screen overflow-hidden">
+
+      {/* Loader */}
+      {!videoLoaded && (
+        <motion.div
+          initial={{ opacity: 1 }}
+          animate={{ opacity: videoLoaded ? 0 : 1 }}
+          transition={{ duration: 0.5 }}
+          className="absolute inset-0 z-30 flex items-center justify-center bg-black"
+        >
+          {/* Loader Circle */}
+          <motion.div
+            className="w-14 h-14 border-4 border-white/30 border-t-white rounded-full animate-spin"
+          />
+        </motion.div>
+      )}
+
       {/* Video */}
       <video
         className="absolute inset-0 w-full h-full object-cover"
@@ -19,7 +36,7 @@ export default function Hero() {
         loop
         muted
         playsInline
-        aria-hidden="true"
+        onLoadedData={() => setVideoLoaded(true)}
       >
         <source src="hero-bg.mp4" type="video/mp4" />
       </video>
@@ -65,16 +82,6 @@ export default function Hero() {
           >
             Hire Me
           </button>
-        </motion.div>
-
-        {/* Floating play badge */}
-        <motion.div
-          animate={{ y: [0, -8, 0] }}
-          transition={{ duration: 3, repeat: Infinity }}
-          className="absolute bottom-8 flex items-center gap-3 text-sm text-white/90"
-        >
-          
-          
         </motion.div>
       </div>
     </section>

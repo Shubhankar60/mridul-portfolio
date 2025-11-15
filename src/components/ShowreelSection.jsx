@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Volume2, VolumeX } from "lucide-react";
 
-// 🎥 Video Categories
 const videoCategories = [
   {
     title: "Car & Bikes Videos",
@@ -37,19 +36,29 @@ const videoCategories = [
 ];
 
 export default function ShowreelSection() {
-  const [muted, setMuted] = useState(true);
   const videoRefs = useRef([]);
+  const [activeSoundIndex, setActiveSoundIndex] = useState(null);
 
-  // 🧠 Toggle mute for ALL videos
-  const toggleMute = () => {
-    const newMuteState = !muted;
-    setMuted(newMuteState);
-    videoRefs.current.forEach((video) => {
-      if (video) video.muted = newMuteState;
-    });
+  // 🔊 Handle mute/unmute of a SINGLE video
+  const toggleSound = (index) => {
+    setActiveSoundIndex((prev) => (prev === index ? null : index));
   };
 
-  // 🎞️ Auto play videos when visible
+  // Apply sound logic to each video
+  useEffect(() => {
+    videoRefs.current.forEach((video, index) => {
+      if (!video) return;
+
+      if (index === activeSoundIndex) {
+        video.muted = false; // enable sound
+        video.volume = 1;
+      } else {
+        video.muted = true; // mute others
+      }
+    });
+  }, [activeSoundIndex]);
+
+  // Auto play when visible
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -65,22 +74,17 @@ export default function ShowreelSection() {
       { threshold: 0.4 }
     );
 
-    videoRefs.current.forEach((video) => {
-      if (video) observer.observe(video);
-    });
-
+    videoRefs.current.forEach((video) => video && observer.observe(video));
     return () => observer.disconnect();
   }, []);
 
   return (
     <section id="showreel" className="bg-black text-white py-20">
-      {/* Header */}
       <motion.div
         className="text-center mb-16"
         initial={{ opacity: 0, y: -40 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
       >
         <h1 className="text-4xl md:text-6xl font-bold text-yellow-400 drop-shadow-lg">
           My Showreel
@@ -89,25 +93,15 @@ export default function ShowreelSection() {
           A glimpse into my professional video editing work — cinematic
           storytelling through visuals.
         </p>
-
-        {/* 🔊 Global Mute Button */}
-        <button
-          onClick={toggleMute}
-          className="mt-6 bg-yellow-400 text-black rounded-full p-3 hover:bg-yellow-300 transition"
-        >
-          {muted ? <VolumeX size={28} /> : <Volume2 size={28} />}
-        </button>
       </motion.div>
 
-      {/* 🎞️ Video Categories */}
+      {/* Video Categories */}
       {videoCategories.map((category, catIndex) => (
         <div key={catIndex} className="max-w-6xl mx-auto px-6 mb-20">
-          {/* Category Header */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
             className="mb-8"
           >
             <h2 className="text-3xl font-semibold text-yellow-400 mb-2">
@@ -116,28 +110,45 @@ export default function ShowreelSection() {
             <p className="text-gray-400">{category.description}</p>
           </motion.div>
 
-          {/* 🎬 Insta Reel Style Horizontal Scroll */}
-          <div className="flex overflow-x-auto space-x-6 scrollbar-hide snap-x snap-mandatory px-4 py-4 justify-start">
+          {/* Horizontal Scroll Reel Section */}
+          <div className="flex overflow-x-auto space-x-6 px-4 py-4 scrollbar-hide snap-x snap-mandatory">
             {category.videos.map((video, vidIndex) => {
-              const globalIndex = catIndex * category.videos.length + vidIndex;
+              const globalIndex = catIndex * 100 + vidIndex;
+
               return (
                 <motion.div
                   key={globalIndex}
                   initial={{ opacity: 0, scale: 0.95 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.6 }}
-                  viewport={{ once: true }}
                   className="relative rounded-2xl overflow-hidden shadow-lg group flex-shrink-0 w-[360px] h-[640px] snap-center bg-gray-900"
                 >
-                  <video
-                    ref={(el) => (videoRefs.current[globalIndex] = el)}
-                    src={video.src}
-                    autoPlay
-                    loop
-                    muted={muted}
-                    playsInline
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
+                 <video
+  ref={(el) => (videoRefs.current[globalIndex] = el)}
+  src={video.src}
+  autoPlay
+  loop
+  muted
+  playsInline
+  disablePictureInPicture
+  controlsList="nodownload noplaybackrate nofullscreen"
+  onContextMenu={(e) => e.preventDefault()}
+  draggable="false"
+  className="w-full h-full object-cover pointer-events-none transition-transform duration-500 group-hover:scale-105"
+/>
+
+
+                  {/* Individual Sound Button */}
+                  <button
+                    onClick={() => toggleSound(globalIndex)}
+                    className="absolute bottom-4 right-4 bg-yellow-400 text-black p-3 rounded-full shadow-lg hover:bg-yellow-300"
+                  >
+                    {activeSoundIndex === globalIndex ? (
+                      <Volume2 size={26} />
+                    ) : (
+                      <VolumeX size={26} />
+                    )}
+                  </button>
                 </motion.div>
               );
             })}
@@ -145,12 +156,10 @@ export default function ShowreelSection() {
         </div>
       ))}
 
-      {/* View More CTA */}
       <motion.div
         className="text-center mt-16"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
       >
         <a
           href="/projects"
